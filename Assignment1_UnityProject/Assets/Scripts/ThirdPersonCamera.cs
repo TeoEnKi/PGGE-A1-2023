@@ -1,7 +1,6 @@
-﻿using System.Collections;
+﻿using PGGE;
 using System.Collections.Generic;
 using UnityEngine;
-using PGGE;
 
 public enum CameraType
 {
