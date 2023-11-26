@@ -44,18 +44,20 @@ namespace PGGE
             //-------------------------------------------------------------------
 
 
-            //!!!GET THE PLAYER"S ACTUAL CENTER WORLD POS
-
+            //!!!GET THE OFFSET????
 
             CharacterController character = mPlayerTransform.GetComponent<CharacterController>();
             int layerMask = ~LayerMask.GetMask("Player");
-            Vector3 characterPos = mPlayerTransform.GetChild(0).transform.position;
 
-            RaycastHit[] hits = Physics.RaycastAll(mCameraTransform.position, Vector3.Normalize(characterPos - mCameraTransform.position), Vector3.Distance(mCameraTransform.position, mPlayerTransform.position),layerMask);
+            Vector3 characterPos = mPlayerTransform.position;
+            characterPos.y += character.height;
+            Debug.Log("posistion of player: "+ characterPos);
+            RaycastHit[] hits = Physics.RaycastAll(characterPos, Vector3.Normalize( mCameraTransform.position - characterPos), Vector3.Distance(mCameraTransform.position, characterPos),layerMask);
             float smallestDist = Vector3.Distance(mCameraTransform.position, mPlayerTransform.position);
             //zero means there is no intersection
             Vector3 nearestIntersection = Vector3.zero;
 
+            //check nearest intersection
             foreach (RaycastHit hit in hits)
             {
                 Debug.Log("hit: " + hit.collider.name);
@@ -67,11 +69,13 @@ namespace PGGE
                 }
 
             }
+
             if (nearestIntersection != Vector3.zero)
             {
                 mCameraTransform.position = nearestIntersection;
             }
-            Debug.DrawLine(mCameraTransform.position, Vector3.Normalize(characterPos - mCameraTransform.position) * Vector3.Distance(mCameraTransform.position, mPlayerTransform.position));
+            Debug.DrawLine(mCameraTransform.position, characterPos);
+            Debug.Log("nearestIntersection" + nearestIntersection);
 
         }
 
