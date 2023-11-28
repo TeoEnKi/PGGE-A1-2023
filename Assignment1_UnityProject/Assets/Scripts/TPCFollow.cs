@@ -33,6 +33,9 @@ namespace PGGE
                 + right * CameraConstants.CameraPositionOffset.x
                 + up * CameraConstants.CameraPositionOffset.y;
 
+            Debug.Log("mPlayerTransform.position" + mPlayerTransform.position);
+            Debug.Log("CameraConstants.CameraPositionOffset.y" + CameraConstants.CameraPositionOffset.y);
+
             // Finally, we change the position of the camera, 
             // not directly, but by applying Lerp.
             Vector3 position = Vector3.Lerp(mCameraTransform.position,

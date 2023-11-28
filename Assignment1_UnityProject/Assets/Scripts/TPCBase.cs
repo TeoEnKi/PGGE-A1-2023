@@ -50,9 +50,10 @@ namespace PGGE
             int layerMask = ~LayerMask.GetMask("Player");
 
             Vector3 characterPos = mPlayerTransform.position;
-            characterPos.y += character.height;
-            Debug.Log("posistion of player: "+ characterPos);
-            RaycastHit[] hits = Physics.RaycastAll(characterPos, Vector3.Normalize( mCameraTransform.position - characterPos), Vector3.Distance(mCameraTransform.position, characterPos),layerMask);
+            characterPos.y += CameraConstants.CameraPositionOffset.y;
+            Debug.Log("posistion of player: " + characterPos);
+
+            RaycastHit[] hits = Physics.RaycastAll(characterPos, Vector3.Normalize(mCameraTransform.position - characterPos), Vector3.Distance(mCameraTransform.position, characterPos), layerMask);
             float smallestDist = Vector3.Distance(mCameraTransform.position, mPlayerTransform.position);
             //zero means there is no intersection
             Vector3 nearestIntersection = Vector3.zero;
@@ -61,7 +62,7 @@ namespace PGGE
             foreach (RaycastHit hit in hits)
             {
                 Debug.Log("hit: " + hit.collider.name);
-                if (Vector3.Distance(hit.point, mPlayerTransform.position) < smallestDist && Vector3.Dot(mPlayerTransform.forward, hit.point-mPlayerTransform.position) < 0 )
+                if (Vector3.Distance(hit.point, mPlayerTransform.position) < smallestDist && Vector3.Dot(mPlayerTransform.forward, hit.point - mPlayerTransform.position) < 0)
                 {
                     smallestDist = Vector3.Distance(hit.point, mPlayerTransform.position);
                     Debug.Log("smallestDist: " + smallestDist);
@@ -69,7 +70,6 @@ namespace PGGE
                 }
 
             }
-
             if (nearestIntersection != Vector3.zero)
             {
                 mCameraTransform.position = nearestIntersection;
