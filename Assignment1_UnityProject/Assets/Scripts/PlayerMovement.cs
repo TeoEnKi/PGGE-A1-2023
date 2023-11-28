@@ -47,15 +47,15 @@ public class PlayerMovement : MonoBehaviour
     public void HandleInputs()
     {
         // We shall handle our inputs here.
-    #if UNITY_STANDALONE
+#if UNITY_STANDALONE
         hInput = Input.GetAxis("Horizontal");
         vInput = Input.GetAxis("Vertical");
-    #endif
+#endif
 
-    #if UNITY_ANDROID
+#if UNITY_ANDROID
         hInput = 2.0f * mJoystick.Horizontal;
         vInput = 2.0f * mJoystick.Vertical;
-    #endif
+#endif
 
         speed = mWalkSpeed;
         if (Input.GetKey(KeyCode.LeftShift))
@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         mAnimator.SetFloat("PosX", 0);
         mAnimator.SetFloat("PosZ", vInput * speed / (2.0f * mWalkSpeed));
 
-        if(jump)
+        if (jump)
         {
             Jump();
             jump = false;
@@ -125,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
     void Crouch()
     {
         mAnimator.SetBool("Crouch", crouch);
-        if(crouch)
+        if (crouch)
         {
             tempHeight = CameraConstants.CameraPositionOffset;
             HalfHeight = tempHeight;
@@ -146,3 +146,5 @@ public class PlayerMovement : MonoBehaviour
             mVelocity.y = 0f;
     }
 }
+
+
