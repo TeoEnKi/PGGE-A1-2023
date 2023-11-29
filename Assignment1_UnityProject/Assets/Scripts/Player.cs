@@ -1,7 +1,7 @@
 ﻿using PGGE;
 using PGGE.Patterns;
+using System;
 using System.Collections;
-using System.Net.Configuration;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -43,7 +43,11 @@ public class Player : MonoBehaviour
     public int[] RoundsPerSecond = new int[3];
     bool[] mFiring = new bool[3];
 
-
+    //for zom
+    public bool attacked = false;
+    public int currentNumAttacks = 0;
+    public int maxNumAttacks = 3;
+    float attackTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,6 +77,7 @@ public class Player : MonoBehaviour
             mAttackButtons[0] = true;
             mAttackButtons[1] = false;
             mAttackButtons[2] = false;
+
         }
         else
         {
@@ -100,11 +105,12 @@ public class Player : MonoBehaviour
         {
             mAttackButtons[2] = false;
         }
-        if (Input.GetKeyDown("r"))
-        {
-            mAnimator.SetTrigger("Recharge");
+        //delete?
+        //if (Input.GetKeyDown("r"))
+        //{
+        // mAnimator.SetTrigger("Recharge");
 
-        }
+        //}
     }
 
     public void Aim()
@@ -207,12 +213,15 @@ public class Player : MonoBehaviour
 
     public void Fire(int id)
     {
-        if (mFiring[id] == false)
         {
+            if (mFiring[id] == false)
+            {
+                StartCoroutine(Coroutine_Firing(id));
+            }
+
             StartCoroutine(Coroutine_Firing(id));
         }
     }
-
     public void FireBullet()
     {
         if (mBulletPrefab == null) return;
@@ -225,14 +234,40 @@ public class Player : MonoBehaviour
 
         bullet.GetComponent<Rigidbody>().AddForce(dir * mBulletSpeed, ForceMode.Impulse);
         mAudioSource.PlayOneShot(mAudioClipGunShot);
+
     }
 
     IEnumerator Coroutine_Firing(int id)
     {
-        mFiring[id] = true;
-        FireBullet();
-        yield return new WaitForSeconds(1.0f / RoundsPerSecond[id]);
-        mFiring[id] = false;
-        mBulletsInMagazine -= 1;
+        if (gameObject.name == "Player")
+        {
+            mFiring[id] = true;
+            FireBullet();
+            yield return new WaitForSeconds(1.0f / RoundsPerSecond[id]);
+            mFiring[id] = false;
+            mBulletsInMagazine -= 1;
+        }
+        else
+        {
+            AnimationClip[] clips = mAnimator.runtimeAnimatorController.animationClips;
+            foreach (AnimationClip clip in clips)
+            {
+                if(clip.name == "Attack"+ (id + 1).ToString())
+                {
+                    attackTime = clip.length;
+                    Debug.Log("clipname:" + clip.name);
+                    break;
+                }
+            }
+            if (!attacked)
+            {
+                currentNumAttacks += 1;
+                attacked = true;
+            }
+
+            yield return new WaitForSeconds(attackTime);
+            attacked = false;
+
+        }
     }
 }

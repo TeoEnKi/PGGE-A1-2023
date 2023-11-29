@@ -888,6 +888,8 @@ MonoBehaviour:
   mBulletPrefab: {fileID: 0}
   mBulletSpeed: 10
   RoundsPerSecond: 000000000000000000000000
+  currentNumAttacks: 0
+  maxNumAttacks: 3
 --- !u!114 &698905908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1684,6 +1686,8 @@ MonoBehaviour:
   mBulletPrefab: {fileID: 0}
   mBulletSpeed: 10
   RoundsPerSecond: 0a0000000800000002000000
+  currentNumAttacks: 0
+  maxNumAttacks: 3
 --- !u!82 &2145642072
 AudioSource:
   m_ObjectHideFlags: 0

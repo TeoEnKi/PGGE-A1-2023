@@ -125,6 +125,7 @@ public class PlayerState_ATTACK : PlayerState
     public override void Enter()
     {
         mPlayer.mAnimator.SetBool(mAttackName, true);
+
     }
     public override void Exit()
     {
@@ -196,10 +197,23 @@ public class PlayerState_ATTACK : PlayerState
         }
         else
         {
-            if (mPlayer.mAttackButtons[0])
+            if (mPlayer.currentNumAttacks >= mPlayer.maxNumAttacks)
+            {
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.RELOAD);
+                Debug.Log("mPlayer.currentNumAttacks " + mPlayer.currentNumAttacks + "mPlayer.maxNumAttacks " + mPlayer.maxNumAttacks);
+
+                return;
+
+            }
+            else
+            {
+                Debug.Log("mPlayer.currentNumAttacks " + mPlayer.currentNumAttacks + "mPlayer.maxNumAttacks " + mPlayer.maxNumAttacks);
+            }
+            if (mPlayer.mAttackButtons[mAttackID])
             {
                 mPlayer.mAnimator.SetBool(mAttackName, true);
-                //mPlayer.Fire(AttackID);
+                mPlayer.Fire(AttackID);
+
             }
             else
             {
@@ -223,24 +237,39 @@ public class PlayerState_RELOAD : PlayerState
 
     public override void Enter()
     {
+        mPlayer.Reload();
+        if (mPlayer.gameObject.name == "Player")
+        {
             mPlayer.mAnimator.SetTrigger("Reload");
-            mPlayer.Reload();
             dt = 0.0f;
+        }
+        else
+        {
             mPlayer.mAnimator.SetTrigger("Recharge");
-        
+        }
 
     }
     public override void Exit()
     {
-        if (mPlayer.mAmunitionCount > mPlayer.mMaxAmunitionBeforeReload)
+        if (mPlayer.gameObject.name == "Player")
         {
-            mPlayer.mBulletsInMagazine += mPlayer.mMaxAmunitionBeforeReload;
-            mPlayer.mAmunitionCount -= mPlayer.mBulletsInMagazine;
+            if (mPlayer.mAmunitionCount > mPlayer.mMaxAmunitionBeforeReload)
+            {
+                mPlayer.mBulletsInMagazine += mPlayer.mMaxAmunitionBeforeReload;
+                mPlayer.mAmunitionCount -= mPlayer.mBulletsInMagazine;
+            }
+            else if (mPlayer.mAmunitionCount > 0 && mPlayer.mAmunitionCount < mPlayer.mMaxAmunitionBeforeReload)
+            {
+                mPlayer.mBulletsInMagazine += mPlayer.mAmunitionCount;
+                mPlayer.mAmunitionCount = 0;
+            }
         }
-        else if (mPlayer.mAmunitionCount > 0 && mPlayer.mAmunitionCount < mPlayer.mMaxAmunitionBeforeReload)
+        else
         {
-            mPlayer.mBulletsInMagazine += mPlayer.mAmunitionCount;
-            mPlayer.mAmunitionCount = 0;
+            if (mPlayer.currentNumAttacks >= mPlayer.maxNumAttacks)
+            {
+                mPlayer.currentNumAttacks = 0;
+            }
         }
 
     }
