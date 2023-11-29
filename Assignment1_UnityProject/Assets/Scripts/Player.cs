@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using PGGE;
 using PGGE.Patterns;
-using PGGE;
+using System.Collections;
+using System.Net.Configuration;
+using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
 {
@@ -57,7 +58,10 @@ public class Player : MonoBehaviour
     void Update()
     {
         mFsm.Update();
-        Aim();
+        if (gameObject.name == "Player")
+        {
+            Aim();
+        }
 
         // For Student ----------------------------------------------------//
         // Implement the logic of button clicks for shooting. 
@@ -65,6 +69,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
+
             mAttackButtons[0] = true;
             mAttackButtons[1] = false;
             mAttackButtons[2] = false;
@@ -94,6 +99,11 @@ public class Player : MonoBehaviour
         else
         {
             mAttackButtons[2] = false;
+        }
+        if (Input.GetKeyDown("r"))
+        {
+            mAnimator.SetTrigger("Recharge");
+
         }
     }
 

@@ -838,7 +838,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4522974bbbf703e439771e8105b45cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
+  mAnimator: {fileID: 1256942464873832628}
+  mPlayerMovement: {fileID: 698905908}
+  mPlayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!143 &698905905
 CharacterController:
   m_ObjectHideFlags: 0

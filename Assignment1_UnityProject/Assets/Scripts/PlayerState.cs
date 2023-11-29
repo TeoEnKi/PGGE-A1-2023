@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using PGGE.Patterns;
 using UnityEngine;
-using PGGE.Patterns;
 
 public enum PlayerStateType
 {
@@ -170,28 +168,44 @@ public class PlayerState_ATTACK : PlayerState
 
         // For tutor - start ---------------------------------------------//
         Debug.Log("Ammo count: " + mPlayer.mAmunitionCount + ", In Magazine: " + mPlayer.mBulletsInMagazine);
-        if (mPlayer.mBulletsInMagazine == 0 && mPlayer.mAmunitionCount > 0)
+        if (mPlayer.gameObject.name == "Player")
         {
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.RELOAD);
-            return;
-        }
+            if (mPlayer.mBulletsInMagazine == 0 && mPlayer.mAmunitionCount > 0)
+            {
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.RELOAD);
+                return;
+            }
 
-        if (mPlayer.mAmunitionCount <= 0 && mPlayer.mBulletsInMagazine <= 0)
-        {
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
-            mPlayer.NoAmmo();
-            return;
-        }
+            if (mPlayer.mAmunitionCount <= 0 && mPlayer.mBulletsInMagazine <= 0)
+            {
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+                mPlayer.NoAmmo();
+                return;
+            }
 
-        if (mPlayer.mAttackButtons[mAttackID])
-        {
-            mPlayer.mAnimator.SetBool(mAttackName, true);
-            mPlayer.Fire(AttackID);
+            if (mPlayer.mAttackButtons[mAttackID])
+            {
+                mPlayer.mAnimator.SetBool(mAttackName, true);
+                mPlayer.Fire(AttackID);
+            }
+            else
+            {
+                mPlayer.mAnimator.SetBool(mAttackName, false);
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            }
         }
         else
         {
-            mPlayer.mAnimator.SetBool(mAttackName, false);
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            if (mPlayer.mAttackButtons[0])
+            {
+                mPlayer.mAnimator.SetBool(mAttackName, true);
+                //mPlayer.Fire(AttackID);
+            }
+            else
+            {
+                mPlayer.mAnimator.SetBool(mAttackName, false);
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            }
         }
         // For tutor - end   ---------------------------------------------//
     }
@@ -209,9 +223,12 @@ public class PlayerState_RELOAD : PlayerState
 
     public override void Enter()
     {
-        mPlayer.mAnimator.SetTrigger("Reload");
-        mPlayer.Reload();
-        dt = 0.0f;
+            mPlayer.mAnimator.SetTrigger("Reload");
+            mPlayer.Reload();
+            dt = 0.0f;
+            mPlayer.mAnimator.SetTrigger("Recharge");
+        
+
     }
     public override void Exit()
     {
@@ -225,6 +242,7 @@ public class PlayerState_RELOAD : PlayerState
             mPlayer.mBulletsInMagazine += mPlayer.mAmunitionCount;
             mPlayer.mAmunitionCount = 0;
         }
+
     }
 
     public override void Update()

@@ -78,6 +78,11 @@ public class PlayerMovement : MonoBehaviour
             crouch = !crouch;
             Crouch();
         }
+        //if (Input.GetKeyDown("r"))
+        //{
+
+        //    //mAnimator.SetTrigger("Recharge");
+        //}
     }
 
     public void Move()
