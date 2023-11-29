@@ -43,11 +43,7 @@ namespace PGGE
             // shift the camera position two the nearest intersected point
             //-------------------------------------------------------------------
 
-
-            //!!!GET THE OFFSET????
-
-            CharacterController character = mPlayerTransform.GetComponent<CharacterController>();
-            int layerMask = ~LayerMask.GetMask("Player");
+            int layerMask = ~mPlayerTransform.gameObject.layer;
 
             Vector3 characterPos = mPlayerTransform.position;
             characterPos.y += CameraConstants.CameraPositionOffset.y;

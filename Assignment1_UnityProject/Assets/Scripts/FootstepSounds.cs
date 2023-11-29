@@ -60,7 +60,6 @@ public class FootstepSounds : MonoBehaviour
                 audioArrayType = textureType + "Sounds";
             }
         }
-        //UpdateTextureTypeSound();
     }
     void RandomizeSound(string motionState, string audioArrayType, out float volReturn, out float pitchReturn, out AudioClip audioClipReturn)
     {
@@ -142,24 +141,5 @@ public class FootstepSounds : MonoBehaviour
         audioSource.pitch = jumpPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
-    //void UpdateTextureTypeSound()
-    //{
-    //    if (currentTextureSound == null)
-    //    {
-    //        string audioArrayType = textureType + "Sounds";
-    //        RandomizeSound(state, audioArrayType, );
-    //        currentTextureSound = footstepSounds[0];
-    //    }
-    //    if (!currentTextureSound.name.ToLower().Contains(textureType.ToLower()))
-    //    {
-    //        foreach (AudioClip clip in footstepSounds)
-    //        {
-    //            if (clip.name.ToLower().Contains(textureType.ToLower()))
-    //            {
-    //                currentTextureSound = clip;
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
+    
 }
