@@ -3,22 +3,30 @@
 public class FootstepSounds : MonoBehaviour
 {
     //list of sounds
-    [SerializeField] AudioClip[] footstepSounds;
+    [SerializeField] AudioClip[] SandSounds;
+    [SerializeField] AudioClip[] GrassSounds;
+    [SerializeField] AudioClip[] MetalSounds;
+    [SerializeField] AudioClip[] ConcreteSounds;
+    [SerializeField] AudioClip[] WoodSounds;
+
     AudioClip currentTextureSound;
     [SerializeField] AudioSource audioSource;
 
-    public string textureType;
+    string textureType;
+    string motionState;
+    string audioArrayType;
 
-    [SerializeField][Range(0f, 1f)] float walkingVol;
-    [SerializeField][Range(0f, 1f)] float runningVol;
-    [SerializeField][Range(0f, 1f)] float jumpVol;
+    [SerializeField][Range(0, 1f)] float walkingVol;
+    [SerializeField][Range(0, 1f)] float runningVol;
+    [SerializeField][Range(0, 1f)] float jumpVol;
 
-    [SerializeField][Range(0f, 1f)] float walkingPitch;
-    [SerializeField][Range(0f, 1f)] float runningPitch;
-    [SerializeField][Range(0f, 1f)] float jumpPitch;
+    [SerializeField][Range(0, 3f)] float walkingPitch;
+    [SerializeField][Range(0, 3f)] float runningPitch;
+    [SerializeField][Range(0, 3f)] float jumpPitch;
 
-    Vector3 groundCheck;
-    [SerializeField] Vector3 offset = new Vector3(0, 0.2f, 0);
+    [SerializeField] Transform groundCheck;
+    Vector3 startRayGroundCheck;
+    [SerializeField] Vector3 offset = new Vector3(0, 0, 0);
 
     [SerializeField] LayerMask ground;
     private RaycastHit hit;
@@ -27,64 +35,131 @@ public class FootstepSounds : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
     }
-    private void Start()
-    {
-        offset.z = gameObject.GetComponentInParent<CharacterController>().radius;
-    }
     private void Update()
     {
-        groundCheck = transform.position;
-        //get the info based on the foot step that is infront of the other
-        groundCheck.z += offset.z;
-        groundCheck.y += offset.y;
-
-        //check ground before updating the tag
-        Debug.DrawLine(groundCheck, Vector3.down * 2, Color.red);
-        if (Physics.Raycast(groundCheck, Vector3.down, out hit, ground))
+        //if player walk backwards, the start point of ground check will be behind player
+        if(Input.GetAxis("Vertical") < 0)
+        {
+            Vector3 backwards = -transform.forward;
+            backwards *= GetComponentInParent<CharacterController>().radius * 2;
+            startRayGroundCheck = groundCheck.position + backwards;
+        }
+        else
+        {
+            startRayGroundCheck = groundCheck.position;
+        }
+        //check ground before updating the type of texture that player stepped on
+        Debug.DrawLine(startRayGroundCheck, startRayGroundCheck + Vector3.down, Color.red);
+        if (Physics.Raycast(startRayGroundCheck, Vector3.down, out hit, ground))
         {
             Debug.Log("Hit");
             if (textureType == "" || textureType != hit.transform.tag)
             {
                 Debug.Log(textureType);
                 textureType = hit.transform.tag;
+                audioArrayType = textureType + "Sounds";
             }
         }
-        UpdateTextureSound();
+        //UpdateTextureTypeSound();
+    }
+    void RandomizeSound(string motionState, string audioArrayType, out float volReturn, out float pitchReturn, out AudioClip audioClipReturn)
+    {
+        int randomClipIndex = 0;
+        audioClipReturn = SandSounds[randomClipIndex];
+
+        switch (audioArrayType)
+        {
+            case "SandSounds":
+                randomClipIndex = Random.Range(0, SandSounds.Length - 1);
+                audioClipReturn = SandSounds[randomClipIndex];
+                break;
+            case "GrassSounds":
+                randomClipIndex = Random.Range(0, GrassSounds.Length - 1);
+                audioClipReturn = GrassSounds[randomClipIndex];
+                break;
+            case "MetalSounds":
+                randomClipIndex = Random.Range(0, MetalSounds.Length - 1);
+                audioClipReturn = MetalSounds[randomClipIndex];
+                break;
+            case "ConcreteSounds":
+                randomClipIndex = Random.Range(0, ConcreteSounds.Length - 1);
+                audioClipReturn = ConcreteSounds[randomClipIndex];
+                break;
+            case "WoodSounds":
+                randomClipIndex = Random.Range(0, WoodSounds.Length - 1);
+                audioClipReturn = WoodSounds[randomClipIndex];
+                break;
+        }
+
+        volReturn = 0;
+        pitchReturn = 0;
+        switch (motionState)
+        {
+            case "Walk":
+
+                volReturn = Random.Range(0.1f, 0.32f);
+                pitchReturn = Random.Range(2f, 3f);
+
+                break;
+
+            case "Run":
+
+                volReturn = Random.Range(0.33f, 0.62f);
+                pitchReturn = Random.Range(1f, 1.9f);
+
+                break;
+
+            case "Jump":
+
+                volReturn = Random.Range(0.63f, 1f);
+                pitchReturn = Random.Range(0f, 0.9f);
+
+                break;
+        }
+
     }
     void WalkStep()
     {
+        motionState = "Walk";
+        RandomizeSound(motionState, audioArrayType, out walkingVol, out walkingPitch, out currentTextureSound);
         audioSource.volume = walkingVol;
         audioSource.pitch = walkingPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
     void RunStep()
     {
+        motionState = "Run";
+        RandomizeSound(motionState, audioArrayType, out runningVol, out runningPitch, out currentTextureSound);
         audioSource.volume = runningVol;
         audioSource.pitch = runningPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
     void JumpLand()
     {
+        motionState = "Jump";
+        RandomizeSound(motionState, audioArrayType, out jumpVol, out jumpPitch, out currentTextureSound);
         audioSource.volume = jumpVol;
         audioSource.pitch = jumpPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
-    void UpdateTextureSound()
-    {
-        if (currentTextureSound == null)
-        {
-            currentTextureSound = footstepSounds[0];
-        }
-        if (!currentTextureSound.name.ToLower().Contains(textureType.ToLower()))
-        {
-            foreach (AudioClip clip in footstepSounds)
-            {
-                if (clip.name.ToLower().Contains(textureType.ToLower()))
-                {
-                    currentTextureSound = clip;
-                    break;
-                }
-            }
-        }
-    }
+    //void UpdateTextureTypeSound()
+    //{
+    //    if (currentTextureSound == null)
+    //    {
+    //        string audioArrayType = textureType + "Sounds";
+    //        RandomizeSound(state, audioArrayType, );
+    //        currentTextureSound = footstepSounds[0];
+    //    }
+    //    if (!currentTextureSound.name.ToLower().Contains(textureType.ToLower()))
+    //    {
+    //        foreach (AudioClip clip in footstepSounds)
+    //        {
+    //            if (clip.name.ToLower().Contains(textureType.ToLower()))
+    //            {
+    //                currentTextureSound = clip;
+    //                break;
+    //            }
+    //        }
+    //    }
+    //}
 }

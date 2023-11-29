@@ -1,9 +1,7 @@
 ﻿using PGGE;
 using PGGE.Patterns;
-using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
 {
@@ -105,12 +103,7 @@ public class Player : MonoBehaviour
         {
             mAttackButtons[2] = false;
         }
-        //delete?
-        //if (Input.GetKeyDown("r"))
-        //{
-        // mAnimator.SetTrigger("Recharge");
 
-        //}
     }
 
     public void Aim()
@@ -213,14 +206,11 @@ public class Player : MonoBehaviour
 
     public void Fire(int id)
     {
+        if (mFiring[id] == false)
         {
-            if (mFiring[id] == false)
-            {
-                StartCoroutine(Coroutine_Firing(id));
-            }
-
             StartCoroutine(Coroutine_Firing(id));
         }
+
     }
     public void FireBullet()
     {
@@ -252,7 +242,7 @@ public class Player : MonoBehaviour
             AnimationClip[] clips = mAnimator.runtimeAnimatorController.animationClips;
             foreach (AnimationClip clip in clips)
             {
-                if(clip.name == "Attack"+ (id + 1).ToString())
+                if (clip.name == "Attack" + (id + 1).ToString())
                 {
                     attackTime = clip.length;
                     Debug.Log("clipname:" + clip.name);
