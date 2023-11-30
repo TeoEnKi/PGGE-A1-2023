@@ -43,8 +43,10 @@ namespace PGGE
             // shift the camera position two the nearest intersected point
             //-------------------------------------------------------------------
 
+            //getting the collided objects of that mask(Default)
             int layerMask = ~mPlayerTransform.gameObject.layer;
 
+            //getting the point around the Player's head / end point of ray
             Vector3 characterPos = mPlayerTransform.position;
             characterPos.y += CameraConstants.CameraPositionOffset.y;
             Debug.Log("posistion of player: " + characterPos);
@@ -54,7 +56,7 @@ namespace PGGE
             //zero means there is no intersection
             Vector3 nearestIntersection = Vector3.zero;
 
-            //check nearest intersection
+            //check nearest intersection by finding object that is closest to player
             foreach (RaycastHit hit in hits)
             {
                 Debug.Log("hit: " + hit.collider.name);
@@ -66,6 +68,7 @@ namespace PGGE
                 }
 
             }
+            //If there was an object(s) between the camera and player, move camera to new point at the point of collision between that object and ray
             if (nearestIntersection != Vector3.zero)
             {
                 mCameraTransform.position = nearestIntersection;

@@ -48,11 +48,10 @@ public class FootstepSounds : MonoBehaviour
         {
             startRayGroundCheck = groundCheck.position;
         }
-        //check ground before updating the type of texture that player stepped on
+        //check for ground before updating the type of texture that player stepped on
         Debug.DrawLine(startRayGroundCheck, startRayGroundCheck + Vector3.down, Color.red);
         if (Physics.Raycast(startRayGroundCheck, Vector3.down, out hit, ground))
         {
-            Debug.Log("Hit");
             if (textureType == "" || textureType != hit.transform.tag)
             {
                 Debug.Log(textureType);
@@ -61,11 +60,13 @@ public class FootstepSounds : MonoBehaviour
             }
         }
     }
+    //randomize the sound of the texture, the vol and pitch for every step
     void RandomizeSound(string motionState, string audioArrayType, out float volReturn, out float pitchReturn, out AudioClip audioClipReturn)
     {
         int randomClipIndex = 0;
         audioClipReturn = SandSounds[randomClipIndex];
 
+        //base of the type of texture, 
         switch (audioArrayType)
         {
             case "SandSounds":
@@ -94,6 +95,7 @@ public class FootstepSounds : MonoBehaviour
         pitchReturn = 0;
         switch (motionState)
         {
+            //base on motion state, give the random value for pitch and volume
             case "Walk":
 
                 volReturn = Random.Range(0.1f, 0.32f);
@@ -117,24 +119,31 @@ public class FootstepSounds : MonoBehaviour
         }
 
     }
+    //for walk animations
     void WalkStep()
     {
+        //change motion state, randomise sound type volume and pitch and update the audio source using those values before playing the chosen audio
         motionState = "Walk";
         RandomizeSound(motionState, audioArrayType, out walkingVol, out walkingPitch, out currentTextureSound);
         audioSource.volume = walkingVol;
         audioSource.pitch = walkingPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
+    //for run animations
+
     void RunStep()
     {
+        //change motion state, randomise sound type volume and pitch and update the audio source using those values before playing the chosen audio
         motionState = "Run";
         RandomizeSound(motionState, audioArrayType, out runningVol, out runningPitch, out currentTextureSound);
         audioSource.volume = runningVol;
         audioSource.pitch = runningPitch;
         audioSource.PlayOneShot(currentTextureSound);
     }
+    //for Jump animations
     void JumpLand()
     {
+        //change motion state, randomise sound type volume and pitch and update the audio source using those values before playing the chosen audio
         motionState = "Jump";
         RandomizeSound(motionState, audioArrayType, out jumpVol, out jumpPitch, out currentTextureSound);
         audioSource.volume = jumpVol;
