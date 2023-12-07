@@ -70,23 +70,23 @@ public class FootstepSounds : MonoBehaviour
         switch (audioArrayType)
         {
             case "SandSounds":
-                randomClipIndex = Random.Range(0, SandSounds.Length - 1);
+                randomClipIndex = Random.Range(0, SandSounds.Length);
                 audioClipReturn = SandSounds[randomClipIndex];
                 break;
             case "GrassSounds":
-                randomClipIndex = Random.Range(0, GrassSounds.Length - 1);
+                randomClipIndex = Random.Range(0, GrassSounds.Length);
                 audioClipReturn = GrassSounds[randomClipIndex];
                 break;
             case "MetalSounds":
-                randomClipIndex = Random.Range(0, MetalSounds.Length - 1);
+                randomClipIndex = Random.Range(0, MetalSounds.Length);
                 audioClipReturn = MetalSounds[randomClipIndex];
                 break;
             case "ConcreteSounds":
-                randomClipIndex = Random.Range(0, ConcreteSounds.Length - 1);
+                randomClipIndex = Random.Range(0, ConcreteSounds.Length);
                 audioClipReturn = ConcreteSounds[randomClipIndex];
                 break;
             case "WoodSounds":
-                randomClipIndex = Random.Range(0, WoodSounds.Length - 1);
+                randomClipIndex = Random.Range(0, WoodSounds.Length);
                 audioClipReturn = WoodSounds[randomClipIndex];
                 break;
         }
